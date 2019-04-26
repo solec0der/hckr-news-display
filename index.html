@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <title>Hckr News</title>
+        <script
+			  src="https://code.jquery.com/jquery-3.4.0.min.js"
+			  integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="
+			  crossorigin="anonymous"></script>
+        <style>
+            @import url('https://fonts.googleapis.com/css?family=Roboto+Mono:300,400,500,700');
+
+            html, body {
+                margin: 0;
+                padding: 0;
+                font-family: 'Roboto Mono', monospace;
+            }
+
+            p {
+                margin: 0;
+                padding: 0;
+            }
+
+            p.title {
+                color: white;
+                font-size: 2.5em;
+            }  
+
+            p.subtitle {
+                color: white;
+                font-size: 1.5em
+            }
+
+            div.story {
+                text-align: center;
+                width: 75%;
+                position: absolute;
+                transform: translate(-50%, -50%);
+                top: 50%;
+                left: 50%;
+            }
+
+            div.story-display {
+                width: 100vw;
+                height: 100vh;
+                background: #424242;
+            }
+
+            a {
+                display: inline-block;
+                text-decoration: none;
+                color: rgba(255, 255, 255, 0.9);
+                background-color: #6AB4AC;
+                padding: 10px;
+                border-radius: 8px;
+                margin-top: 25px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+                transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+            }  
+
+            a:hover {
+                box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+            }
+        </style>
+
+        <script>
+            $(document).ready(function () {
+                fetchStory();
+
+                setInterval(fetchStory, 15000);
+            
+                function fetchStory() {
+                    $.get('stories.php', function(response) {
+                        let parsedJSON = JSON.parse(response);
+                        
+                        let date = new Date(parsedJSON['time'] * 1000);
+                        let options = {
+                                year: 'numeric', month: 'numeric', day: 'numeric',
+                        };
+
+                        let publishedAt = date.toLocaleString('en', options);
+
+                        let newHTML = "<div class='story'>";
+                        newHTML += "<p class='title'>" + parsedJSON['title'] + "</p><br>"
+                        newHTML += "<p class='subtitle'>Published at " + publishedAt + " - Score " +  parsedJSON['score'] + "</p>"
+                        newHTML += "<a href='" + parsedJSON['url'] + "'>Learn more...</a>"
+                        newHTML += "</div>";
+
+                        $('.story-display').html(newHTML);
+                    });
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <div class="story-display">
+
+        </div>
+    </body>
+
+</html>
